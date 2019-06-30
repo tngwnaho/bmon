@@ -19,6 +19,7 @@ def printMessages(service, user_id, query=''):
     test_dict = {}
     test_dict['unixtime'] = []
     test_dict['date_time'] = []
+    test_dict['date_time_onlytime'] = []
     test_dict['day_of_the_week'] = []
     test_dict['day_of_lesson'] = []
     test_dict['time_of_lesson'] = []
@@ -30,6 +31,7 @@ def printMessages(service, user_id, query=''):
             message = service.users().messages().get(userId=user_id, id=message_id['id'], format='raw').execute()
             unixTimeStamp = int(message['internalDate'][:10])
             dateTime = datetime.fromtimestamp(unixTimeStamp)
+            dateTimeOnlyTime = dateTime.strftime("%H:%M:%S")
             weekDay = dateTime.weekday()
             snippest_list = message['snippet'].split(" ")
             dayOfLesson = snippest_list[3].split("：")[1]
@@ -37,9 +39,9 @@ def printMessages(service, user_id, query=''):
             placeOfLesson = snippest_list[6].split("パフォーマー")[0]
             performer = snippest_list[7]
 
-
-            test_dict['unixtime'] = unixTimeStamp
+            test_dict['unixtime'].append(unixTimeStamp)
             test_dict['date_time'].append(dateTime)
+            test_dict['date_time_onlytime'].append(dateTimeOnlyTime)
             test_dict['day_of_the_week'].append(weekDay)
             test_dict['day_of_lesson'].append(dayOfLesson)
             test_dict['time_of_lesson'].append(timeOfLesson)
@@ -53,6 +55,7 @@ def printMessages(service, user_id, query=''):
             message = service.users().messages().get(userId=user_id, id=message_id['id'], format='raw').execute()
             unixTimeStamp = int(message['internalDate'][:10])
             dateTime = datetime.fromtimestamp(unixTimeStamp)
+            dateTimeOnlyTime = dateTime.strftime("%H:%M:%S")
             weekDay = dateTime.weekday()
             snippest_list = message['snippet'].split(" ")
             dayOfLesson = snippest_list[3].split("：")[1]
@@ -60,14 +63,15 @@ def printMessages(service, user_id, query=''):
             placeOfLesson = snippest_list[6].split("パフォーマー")[0]
             performer = snippest_list[7]
 
-            test_dict['unixtime'] = unixTimeStamp
+            test_dict['unixtime'].append(unixTimeStamp)
             test_dict['date_time'].append(dateTime)
+            test_dict['date_time_onlytime'].append(dateTimeOnlyTime)
             test_dict['day_of_the_week'].append(weekDay)
             test_dict['day_of_lesson'].append(dayOfLesson)
             test_dict['time_of_lesson'].append(timeOfLesson)
             test_dict['place_of_lesson'].append(placeOfLesson)
             test_dict['performer'].append(performer)
-    columns=['unixtime', 'date_time', 'day_of_the_week', 'day_of_lesson','time_of_lesson','place_of_lesson','performer']
+    columns=['unixtime', 'date_time', 'date_time_onlytime','day_of_the_week', 'day_of_lesson','time_of_lesson','place_of_lesson','performer']
     return pandas.DataFrame.from_dict(test_dict).ix[:,columns]
 
 def main():
